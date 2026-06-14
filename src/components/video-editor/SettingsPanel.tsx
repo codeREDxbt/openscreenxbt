@@ -51,9 +51,9 @@ import {
 	GIF_FRAME_RATES,
 	GIF_SIZE_PRESETS,
 } from "@/lib/exporter";
+import { loadUserPreferences, saveUserPreferences } from "@/lib/userPreferences";
 import { cn } from "@/lib/utils";
 import { resolveImageWallpaperUrl, WALLPAPER_PATHS } from "@/lib/wallpaper";
-import { loadUserPreferences, saveUserPreferences } from "@/lib/userPreferences";
 import { openDirectoryPicker } from "@/native";
 import { type AspectRatio, isPortraitAspectRatio } from "@/utils/aspectRatioUtils";
 import { getTestId } from "@/utils/getTestId";
@@ -488,7 +488,9 @@ export function SettingsPanel({
 	showCursorSettings = true,
 }: SettingsPanelProps) {
 	const t = useScopedT("settings");
-	const [exportFolderState, setExportFolderState] = useState<string | null>(() => loadUserPreferences().exportFolder);
+	const [exportFolderState, setExportFolderState] = useState<string | null>(
+		() => loadUserPreferences().exportFolder,
+	);
 	const [activePanelMode, setActivePanelMode] = useState<SettingsPanelMode>("background");
 	const sourceDimensions = formatSourceDimensions(videoElement, cropRegion);
 	// Resolved URLs are for DOM rendering only. We persist the canonical
@@ -2164,9 +2166,14 @@ export function SettingsPanel({
 						)}
 
 						<div className="flex flex-col gap-2 mt-4 mb-2">
-							<span className="text-xs text-neutral-400 font-mono tracking-wider uppercase">Save Location</span>
+							<span className="text-xs text-neutral-400 font-mono tracking-wider uppercase">
+								Save Location
+							</span>
 							<div className="flex items-center gap-2">
-								<div className="flex-1 bg-neutral-900 border border-neutral-800 rounded px-3 py-2 text-xs font-mono text-neutral-300 truncate" title={exportFolderState || "Default Location"}>
+								<div
+									className="flex-1 bg-neutral-900 border border-neutral-800 rounded px-3 py-2 text-xs font-mono text-neutral-300 truncate"
+									title={exportFolderState || "Default Location"}
+								>
 									{exportFolderState || "Default (Documents)"}
 								</div>
 								<Button

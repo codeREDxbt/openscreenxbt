@@ -9,7 +9,9 @@ import { useScopedT } from "./contexts/I18nContext";
 import { ShortcutsProvider } from "./contexts/ShortcutsContext";
 import { loadAllCustomFonts } from "./lib/customFonts";
 
-const VideoEditor = lazy(() => import("./components/video-editor/VideoEditor").then((module) => ({ default: module.default })));
+const VideoEditor = lazy(() =>
+	import("./components/video-editor/VideoEditor").then((module) => ({ default: module.default })),
+);
 const ShortcutsConfigDialog = lazy(() =>
 	import("./components/video-editor/ShortcutsConfigDialog").then((module) => ({
 		default: module.ShortcutsConfigDialog,
@@ -102,9 +104,7 @@ export default function App() {
 					</ShortcutsProvider>
 				);
 			default:
-				return (
-					<MainDashboard />
-				);
+				return <MainDashboard />;
 		}
 	})();
 
