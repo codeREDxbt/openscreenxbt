@@ -2447,6 +2447,27 @@ export function registerIpcHandlers(
 		}
 	});
 
+	ipcMain.handle("open-directory-picker", async (_, defaultPath?: string) => {
+		try {
+			const dialogOptions = buildDialogOptions(
+				{
+					title: mainT("dialogs", "fileDialogs.selectFolder") || "Select Folder",
+					defaultPath: defaultPath || app.getPath("documents"),
+					properties: ["openDirectory", "createDirectory"],
+				},
+				getMainWindow(),
+			);
+			const result = await dialog.showOpenDialog(dialogOptions);
+			if (result.canceled || result.filePaths.length === 0) {
+				return { success: false, canceled: true };
+			}
+			return { success: true, path: result.filePaths[0] };
+		} catch (error) {
+			console.error("Failed to open directory picker:", error);
+			return { success: false, message: "Failed to open directory picker", error: String(error) };
+		}
+	});
+
 	ipcMain.handle("open-video-file-picker", async () => {
 		try {
 			const dialogOptions = buildDialogOptions(

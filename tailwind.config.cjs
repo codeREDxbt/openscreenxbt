@@ -38,6 +38,17 @@ module.exports = {
 				sm: "calc(var(--radius) - 4px)",
 			},
 			colors: {
+				surface: '#121212',
+				'surface-container': '#1a1a1a',
+				'surface-variant': '#242424',
+				primary: '#10b981',
+				'primary-container': '#064e3b',
+				'on-primary': '#ffffff',
+				'on-surface': '#f3f4f6',
+				'on-surface-variant': '#9ca3af',
+				outline: '#374151',
+				'outline-variant': '#4b5563',
+				error: '#ef4444',
 				background: "hsl(var(--background))",
 				foreground: "hsl(var(--foreground))",
 				card: {
@@ -47,10 +58,6 @@ module.exports = {
 				popover: {
 					DEFAULT: "hsl(var(--popover))",
 					foreground: "hsl(var(--popover-foreground))",
-				},
-				primary: {
-					DEFAULT: "hsl(var(--primary))",
-					foreground: "hsl(var(--primary-foreground))",
 				},
 				secondary: {
 					DEFAULT: "hsl(var(--secondary))",
@@ -78,6 +85,12 @@ module.exports = {
 					4: "hsl(var(--chart-4))",
 					5: "hsl(var(--chart-5))",
 				},
+			},
+			fontFamily: {
+				headline: ["Public Sans", "sans-serif"],
+				display: ["Public Sans", "sans-serif"],
+				body: ["Inter", "sans-serif"],
+				label: ["JetBrains Mono", "monospace"]
 			},
 		},
 	},

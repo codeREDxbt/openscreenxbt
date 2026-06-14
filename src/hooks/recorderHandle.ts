@@ -1,4 +1,4 @@
-const RECORDER_TIMESLICE_MS = 1000;
+const RECORDER_TIMESLICE_MS = 250;
 
 export type RecorderHandle = {
 	recorder: MediaRecorder;

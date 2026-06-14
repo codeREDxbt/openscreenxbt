@@ -1,5 +1,5 @@
 import type { Span } from "dnd-timeline";
-import { FolderOpen, Languages, Save, Video } from "lucide-react";
+import { Languages } from "lucide-react";
 import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import { toast } from "sonner";
@@ -2374,7 +2374,20 @@ export default function VideoEditor() {
 	}
 
 	return (
-		<div className="flex flex-col h-screen bg-[#09090b] text-slate-200 overflow-hidden selection:bg-[#34B27B]/30">
+		<div className="bg-neutral-950 text-neutral-300 font-body h-screen flex flex-col overflow-hidden antialiased selection:bg-emerald-900 selection:text-emerald-100">
+			<style>
+				{`
+					::-webkit-scrollbar { width: 6px; height: 6px; }
+					::-webkit-scrollbar-track { background: #000000; }
+					::-webkit-scrollbar-thumb { background: #262626; border-radius: 0px; }
+					::-webkit-scrollbar-thumb:hover { background: #404040; }
+					.border-rigid { border: 1px solid #262626; }
+					.border-r-rigid { border-right: 1px solid #262626; }
+					.border-b-rigid { border-bottom: 1px solid #262626; }
+					.border-t-rigid { border-top: 1px solid #262626; }
+					.border-l-rigid { border-left: 1px solid #262626; }
+				`}
+			</style>
 			<Dialog open={showNewRecordingDialog} onOpenChange={setShowNewRecordingDialog}>
 				<DialogContent
 					className="sm:max-w-[425px]"
@@ -2482,57 +2495,35 @@ export default function VideoEditor() {
 				</DialogContent>
 			</Dialog>
 
-			<div
-				className="h-11 flex-shrink-0 bg-[#070809]/85 backdrop-blur-xl border-b border-white/[0.07] flex items-center justify-between px-5 z-50 shadow-[0_1px_0_rgba(255,255,255,0.03)]"
-				style={{ WebkitAppRegion: "drag" } as CSSProperties}
-			>
-				<div
-					className="flex-1 flex items-center gap-1"
-					style={{ WebkitAppRegion: "no-drag" } as CSSProperties}
-				>
-					<div
-						className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-white/50 hover:text-white/90 hover:bg-white/[0.08] transition-all duration-150 ${isMac ? "ml-14" : "ml-2"}`}
-					>
+			<header className="flex justify-between items-center w-full px-2 h-10 bg-neutral-950 border-b border-neutral-800 shrink-0" style={{ WebkitAppRegion: "drag" } as CSSProperties}>
+				<div className="flex items-center space-x-4" style={{ WebkitAppRegion: "no-drag" } as CSSProperties}>
+					<div className="text-sm font-bold text-emerald-500 border border-emerald-500 px-2 py-0.5 tracking-tighter uppercase font-mono">
+						DEV_EDIT_v1.0
+					</div>
+					<nav className="flex h-full items-end space-x-1">
+						<button onClick={() => setShowNewRecordingDialog(true)} className="font-mono uppercase tracking-tighter text-xs text-neutral-400 hover:bg-neutral-800 hover:text-emerald-400 px-2 py-1 h-full flex items-center transition-none">{t("newRecording.title")}</button>
+						<button onClick={handleLoadProject} className="font-mono uppercase tracking-tighter text-xs text-neutral-400 hover:bg-neutral-800 hover:text-emerald-400 px-2 py-1 h-full flex items-center transition-none">{ts("project.load")}</button>
+						<button onClick={handleSaveProject} className="font-mono uppercase tracking-tighter text-xs text-neutral-400 hover:bg-neutral-800 hover:text-emerald-400 px-2 py-1 h-full flex items-center transition-none">{ts("project.save")}</button>
+					</nav>
+				</div>
+				<div className="flex items-center space-x-1 h-full" style={{ WebkitAppRegion: "no-drag" } as CSSProperties}>
+					<div className="flex items-center gap-1.5 px-2.5 py-1.5 text-neutral-400 font-mono text-xs hover:text-emerald-400 transition-none">
 						<Languages size={14} />
 						<select
 							value={locale}
 							onChange={(e) => setLocale(e.target.value as Locale)}
-							className="bg-transparent text-[11px] font-medium outline-none cursor-pointer appearance-none pr-1"
+							className="bg-transparent outline-none cursor-pointer appearance-none pr-1 uppercase tracking-tighter"
 							style={{ color: "inherit" }}
 						>
 							{availableLocales.map((loc) => (
-								<option key={loc} value={loc} className="bg-[#09090b] text-white">
+								<option key={loc} value={loc} className="bg-neutral-950 text-neutral-300">
 									{getLocaleName(loc)}
 								</option>
 							))}
 						</select>
 					</div>
-					<button
-						type="button"
-						onClick={() => setShowNewRecordingDialog(true)}
-						className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-white/50 hover:text-white/90 hover:bg-white/[0.08] transition-all duration-150 text-[11px] font-medium"
-					>
-						<Video size={14} />
-						{t("newRecording.title")}
-					</button>
-					<button
-						type="button"
-						onClick={handleLoadProject}
-						className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-white/50 hover:text-white/90 hover:bg-white/[0.08] transition-all duration-150 text-[11px] font-medium"
-					>
-						<FolderOpen size={14} />
-						{ts("project.load")}
-					</button>
-					<button
-						type="button"
-						onClick={handleSaveProject}
-						className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-white/50 hover:text-white/90 hover:bg-white/[0.08] transition-all duration-150 text-[11px] font-medium"
-					>
-						<Save size={14} />
-						{ts("project.save")}
-					</button>
 				</div>
-			</div>
+			</header>
 
 			{/* Empty state shown when no video is loaded */}
 			{!videoPath && (
@@ -2555,116 +2546,12 @@ export default function VideoEditor() {
 			)}
 
 			{videoPath && (
-				<div className="editor-workspace flex-1 min-h-0 relative">
-					<PanelGroup direction="vertical" className="gap-3 min-h-0">
-						{/* Top section: preview and contextual settings */}
-						<Panel defaultSize={67} maxSize={76} minSize={46} className="min-h-[300px]">
-							<div className="editor-main-deck h-full min-h-0">
-								<div className="editor-preview-zone min-w-0 h-full">
-									<div
-										ref={playerContainerRef}
-										className={
-											isFullscreen
-												? "fixed inset-0 z-[99999] w-full h-full flex flex-col items-center justify-center bg-[#09090b]"
-												: "editor-preview-panel w-full h-full flex flex-col items-center justify-center overflow-hidden relative"
-										}
-									>
-										{/* Video preview */}
-										<div className="w-full min-h-0 flex justify-center items-center flex-auto px-4 pt-4">
-											<div
-												className="relative flex justify-center items-center w-auto h-full max-w-full box-border"
-												style={{
-													aspectRatio:
-														aspectRatio === "native"
-															? getNativeAspectRatioValue(
-																	videoPlaybackRef.current?.video?.videoWidth ||
-																		DEFAULT_SOURCE_DIMENSIONS.width,
-																	videoPlaybackRef.current?.video?.videoHeight ||
-																		DEFAULT_SOURCE_DIMENSIONS.height,
-																	cropRegion,
-																)
-															: getAspectRatioValue(aspectRatio),
-												}}
-											>
-												<VideoPlayback
-													key={`${videoPath || "no-video"}:${webcamVideoPath || "no-webcam"}`}
-													aspectRatio={aspectRatio}
-													ref={videoPlaybackRef}
-													videoPath={videoPath || ""}
-													webcamVideoPath={webcamVideoPath || undefined}
-													webcamLayoutPreset={webcamLayoutPreset}
-													webcamMaskShape={webcamMaskShape}
-													webcamMirrored={webcamMirrored}
-													webcamReactiveZoom={webcamReactiveZoom}
-													webcamSizePreset={webcamSizePreset}
-													webcamPosition={webcamPosition}
-													onWebcamPositionChange={(pos) => updateState({ webcamPosition: pos })}
-													onWebcamPositionDragEnd={commitState}
-													onDurationChange={setDuration}
-													onTimeUpdate={setCurrentTime}
-													currentTime={currentTime}
-													onPlayStateChange={setIsPlaying}
-													onError={setError}
-													wallpaper={wallpaper}
-													zoomRegions={zoomRegions}
-													selectedZoomId={selectedZoomId}
-													onSelectZoom={handleSelectZoom}
-													onZoomFocusChange={handleZoomFocusChange}
-													onZoomFocusDragEnd={commitState}
-													isPlaying={isPlaying}
-													showShadow={shadowIntensity > 0}
-													shadowIntensity={shadowIntensity}
-													showBlur={showBlur}
-													motionBlurAmount={motionBlurAmount}
-													borderRadius={borderRadius}
-													padding={padding}
-													cropRegion={cropRegion}
-													cursorRecordingData={cursorRecordingData}
-													trimRegions={trimRegions}
-													speedRegions={speedRegions}
-													annotationRegions={annotationOnlyRegions}
-													selectedAnnotationId={selectedAnnotationId}
-													onSelectAnnotation={handleSelectAnnotation}
-													onAnnotationPositionChange={handleAnnotationPositionChange}
-													onAnnotationSizeChange={handleAnnotationSizeChange}
-													blurRegions={blurRegions}
-													selectedBlurId={selectedBlurId}
-													onSelectBlur={handleSelectBlur}
-													onBlurPositionChange={handleAnnotationPositionChange}
-													onBlurSizeChange={handleAnnotationSizeChange}
-													onBlurDataChange={handleBlurDataPreviewChange}
-													onBlurDataCommit={commitState}
-													cursorTelemetry={cursorTelemetry}
-													cursorClickTimestamps={cursorClickTimestamps}
-													showCursor={effectiveShowCursor}
-													cursorSize={cursorSize}
-													cursorSmoothing={cursorSmoothing}
-													cursorMotionBlur={cursorMotionBlur}
-													cursorClickBounce={cursorClickBounce}
-													cursorClipToBounds={cursorClipToBounds}
-													cursorTheme={cursorTheme}
-													isPreviewingZoom={isPreviewingZoom}
-												/>
-											</div>
-										</div>
-										{/* Playback controls */}
-										<div className="w-full flex justify-center items-center h-14 flex-shrink-0 px-4 py-2">
-											<div className="w-full max-w-[760px]">
-												<PlaybackControls
-													isPlaying={isPlaying}
-													currentTime={currentTime}
-													duration={duration}
-													isFullscreen={isFullscreen}
-													onToggleFullscreen={toggleFullscreen}
-													onTogglePlayPause={togglePlayPause}
-													onSeek={handleSeek}
-												/>
-											</div>
-										</div>
-									</div>
-								</div>
-
-								<div className="editor-settings-rail min-w-0 h-full">
+				<PanelGroup direction="vertical" className="flex-1 min-h-0 bg-black">
+					<Panel defaultSize={70} className="min-h-[300px] flex">
+						<PanelGroup direction="horizontal">
+							{/* Left Sidebar: Settings Panel */}
+							<Panel defaultSize={25} minSize={20} maxSize={40} className="bg-neutral-900 flex flex-col h-full border-r border-neutral-800 shrink-0 relative z-10">
+								<div className="w-full h-full flex flex-col">
 									<SettingsPanel
 										selected={wallpaper}
 										onWallpaperChange={(w) => pushState({ wallpaper: w })}
@@ -2839,16 +2726,121 @@ export default function VideoEditor() {
 										showCursorSettings={showCursorSettings}
 									/>
 								</div>
-							</div>
+							</Panel>
+							<PanelResizeHandle className="w-1 bg-neutral-800 hover:bg-emerald-500 transition-colors" />
+							
+							{/* Main Workspace: Canvas & Transport Controls */}
+							<Panel className="flex-1 flex flex-col bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-neutral-900 to-black relative">
+								<div
+									ref={playerContainerRef}
+									className={
+										isFullscreen
+											? "fixed inset-0 z-[99999] w-full h-full flex flex-col items-center justify-center bg-[#09090b]"
+											: "flex-1 w-full h-full flex flex-col items-center justify-center overflow-hidden relative"
+									}
+								>
+										{/* Video preview */}
+										<div className="w-full min-h-0 flex justify-center items-center flex-auto px-4 pt-4">
+											<div
+												className="relative flex justify-center items-center w-auto h-full max-w-full box-border"
+												style={{
+													aspectRatio:
+														aspectRatio === "native"
+															? getNativeAspectRatioValue(
+																	videoPlaybackRef.current?.video?.videoWidth ||
+																		DEFAULT_SOURCE_DIMENSIONS.width,
+																	videoPlaybackRef.current?.video?.videoHeight ||
+																		DEFAULT_SOURCE_DIMENSIONS.height,
+																	cropRegion,
+																)
+															: getAspectRatioValue(aspectRatio),
+												}}
+											>
+												<VideoPlayback
+													key={`${videoPath || "no-video"}:${webcamVideoPath || "no-webcam"}`}
+													aspectRatio={aspectRatio}
+													ref={videoPlaybackRef}
+													videoPath={videoPath || ""}
+													webcamVideoPath={webcamVideoPath || undefined}
+													webcamLayoutPreset={webcamLayoutPreset}
+													webcamMaskShape={webcamMaskShape}
+													webcamMirrored={webcamMirrored}
+													webcamReactiveZoom={webcamReactiveZoom}
+													webcamSizePreset={webcamSizePreset}
+													webcamPosition={webcamPosition}
+													onWebcamPositionChange={(pos) => updateState({ webcamPosition: pos })}
+													onWebcamPositionDragEnd={commitState}
+													onDurationChange={setDuration}
+													onTimeUpdate={setCurrentTime}
+													currentTime={currentTime}
+													onPlayStateChange={setIsPlaying}
+													onError={setError}
+													wallpaper={wallpaper}
+													zoomRegions={zoomRegions}
+													selectedZoomId={selectedZoomId}
+													onSelectZoom={handleSelectZoom}
+													onZoomFocusChange={handleZoomFocusChange}
+													onZoomFocusDragEnd={commitState}
+													isPlaying={isPlaying}
+													showShadow={shadowIntensity > 0}
+													shadowIntensity={shadowIntensity}
+													showBlur={showBlur}
+													motionBlurAmount={motionBlurAmount}
+													borderRadius={borderRadius}
+													padding={padding}
+													cropRegion={cropRegion}
+													cursorRecordingData={cursorRecordingData}
+													trimRegions={trimRegions}
+													speedRegions={speedRegions}
+													annotationRegions={annotationOnlyRegions}
+													selectedAnnotationId={selectedAnnotationId}
+													onSelectAnnotation={handleSelectAnnotation}
+													onAnnotationPositionChange={handleAnnotationPositionChange}
+													onAnnotationSizeChange={handleAnnotationSizeChange}
+													blurRegions={blurRegions}
+													selectedBlurId={selectedBlurId}
+													onSelectBlur={handleSelectBlur}
+													onBlurPositionChange={handleAnnotationPositionChange}
+													onBlurSizeChange={handleAnnotationSizeChange}
+													onBlurDataChange={handleBlurDataPreviewChange}
+													onBlurDataCommit={commitState}
+													cursorTelemetry={cursorTelemetry}
+													cursorClickTimestamps={cursorClickTimestamps}
+													showCursor={effectiveShowCursor}
+													cursorSize={cursorSize}
+													cursorSmoothing={cursorSmoothing}
+													cursorMotionBlur={cursorMotionBlur}
+													cursorClickBounce={cursorClickBounce}
+													cursorClipToBounds={cursorClipToBounds}
+													cursorTheme={cursorTheme}
+													isPreviewingZoom={isPreviewingZoom}
+												/>
+											</div>
+										</div>
+										{/* Playback controls */}
+										<div className="w-full flex justify-center items-center h-14 flex-shrink-0 px-4 py-2">
+											<div className="w-full max-w-[760px]">
+												<PlaybackControls
+													isPlaying={isPlaying}
+													currentTime={currentTime}
+													duration={duration}
+													isFullscreen={isFullscreen}
+													onToggleFullscreen={toggleFullscreen}
+													onTogglePlayPause={togglePlayPause}
+													onSeek={handleSeek}
+												/>
+											</div>
+										</div>
+									</div>
+								</Panel>
+							</PanelGroup>
 						</Panel>
 
-						<PanelResizeHandle className="editor-resize-handle group">
-							<div className="w-10 h-1 bg-white/20 rounded-full transition-colors group-hover:bg-[#34B27B]/70"></div>
-						</PanelResizeHandle>
+						<PanelResizeHandle className="h-1 bg-neutral-800 hover:bg-emerald-500 transition-colors" />
 
 						{/* Full-width timeline */}
-						<Panel defaultSize={33} maxSize={54} minSize={24} className="min-h-[210px]">
-							<div className="editor-timeline-panel h-full overflow-hidden flex flex-col">
+						<Panel defaultSize={30} maxSize={54} minSize={24} className="bg-neutral-950 border-t border-neutral-800">
+							<div className="h-full overflow-hidden flex flex-col">
 								<TimelineEditor
 									videoDuration={duration}
 									currentTime={currentTime}
@@ -2917,7 +2909,6 @@ export default function VideoEditor() {
 							</div>
 						</Panel>
 					</PanelGroup>
-				</div>
 			)}
 
 			<ExportDialog

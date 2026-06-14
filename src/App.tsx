@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { CountdownOverlay } from "./components/launch/CountdownOverlay.tsx";
 import { LaunchWindow } from "./components/launch/LaunchWindow";
+import { MainDashboard } from "./components/launch/MainDashboard";
 import { SourceSelector } from "./components/launch/SourceSelector";
 import { Toaster } from "./components/ui/sonner";
 import { TooltipProvider } from "./components/ui/tooltip";
@@ -8,7 +9,7 @@ import { useScopedT } from "./contexts/I18nContext";
 import { ShortcutsProvider } from "./contexts/ShortcutsContext";
 import { loadAllCustomFonts } from "./lib/customFonts";
 
-const VideoEditor = lazy(() => import("./components/video-editor/VideoEditor"));
+const VideoEditor = lazy(() => import("./components/video-editor/VideoEditor").then((module) => ({ default: module.default })));
 const ShortcutsConfigDialog = lazy(() =>
 	import("./components/video-editor/ShortcutsConfigDialog").then((module) => ({
 		default: module.ShortcutsConfigDialog,
@@ -102,9 +103,7 @@ export default function App() {
 				);
 			default:
 				return (
-					<div className="w-full h-full bg-background text-foreground">
-						<h1>Openscreen</h1>
-					</div>
+					<MainDashboard />
 				);
 		}
 	})();

@@ -53,6 +53,8 @@ import {
 } from "@/lib/exporter";
 import { cn } from "@/lib/utils";
 import { resolveImageWallpaperUrl, WALLPAPER_PATHS } from "@/lib/wallpaper";
+import { loadUserPreferences, saveUserPreferences } from "@/lib/userPreferences";
+import { openDirectoryPicker } from "@/native";
 import { type AspectRatio, isPortraitAspectRatio } from "@/utils/aspectRatioUtils";
 import { getTestId } from "@/utils/getTestId";
 import ColorPicker from "../ui/color-picker";
@@ -486,6 +488,7 @@ export function SettingsPanel({
 	showCursorSettings = true,
 }: SettingsPanelProps) {
 	const t = useScopedT("settings");
+	const [exportFolderState, setExportFolderState] = useState<string | null>(() => loadUserPreferences().exportFolder);
 	const [activePanelMode, setActivePanelMode] = useState<SettingsPanelMode>("background");
 	const sourceDimensions = formatSourceDimensions(videoElement, cropRegion);
 	// Resolved URLs are for DOM rendering only. We persist the canonical
@@ -2159,6 +2162,29 @@ export function SettingsPanel({
 								</div>
 							</div>
 						)}
+
+						<div className="flex flex-col gap-2 mt-4 mb-2">
+							<span className="text-xs text-neutral-400 font-mono tracking-wider uppercase">Save Location</span>
+							<div className="flex items-center gap-2">
+								<div className="flex-1 bg-neutral-900 border border-neutral-800 rounded px-3 py-2 text-xs font-mono text-neutral-300 truncate" title={exportFolderState || "Default Location"}>
+									{exportFolderState || "Default (Documents)"}
+								</div>
+								<Button
+									type="button"
+									variant="outline"
+									className="shrink-0 bg-neutral-800 border-neutral-700 hover:bg-neutral-700 hover:text-emerald-400 text-neutral-300 transition-none"
+									onClick={async () => {
+										const res = await openDirectoryPicker(exportFolderState || undefined);
+										if (res.success && res.path) {
+											setExportFolderState(res.path);
+											saveUserPreferences({ exportFolder: res.path });
+										}
+									}}
+								>
+									Browse
+								</Button>
+							</div>
+						</div>
 
 						{unsavedExport && (
 							<Button

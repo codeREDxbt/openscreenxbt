@@ -182,6 +182,13 @@ interface Window {
 			canceled?: boolean;
 			error?: string;
 		}>;
+		openDirectoryPicker: (defaultPath?: string) => Promise<{
+			success: boolean;
+			path?: string;
+			message?: string;
+			canceled?: boolean;
+			error?: string;
+		}>;
 		writeExportToPath: (
 			videoData: ArrayBuffer,
 			filePath: string,
